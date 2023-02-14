@@ -4,7 +4,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Product {
@@ -14,22 +16,40 @@ public class Product {
     private Long id;
     private int price;
     private String name,description, image;
+    private int stock;
     private CategoryShoes categoryShoes;
     @ElementCollection
     private List<Integer> sizeShoes = new ArrayList<>();
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Client client;
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    private Set<ClientProduct> clientProducts = new HashSet<>();
 
     public Product() {
     }
 
-    public Product(int price, String name, String description, String image, CategoryShoes categoryShoes, List<Integer> sizeShoes) {
+    public Product(int price, String name, String description, String image, CategoryShoes categoryShoes, List<Integer> sizeShoes, int stock) {
         this.price = price;
         this.name = name;
         this.description = description;
         this.image = image;
         this.categoryShoes = categoryShoes;
         this.sizeShoes = sizeShoes;
+        this.stock = stock;
+    }
+
+    public Set<ClientProduct> getClientProducts() {
+        return clientProducts;
+    }
+
+    public void setClientProducts(Set<ClientProduct> clientProducts) {
+        this.clientProducts = clientProducts;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
     public Long getId() {
@@ -86,13 +106,5 @@ public class Product {
 
     public void setSizeShoes(List<Integer> sizeShoes) {
         this.sizeShoes = sizeShoes;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
     }
 }

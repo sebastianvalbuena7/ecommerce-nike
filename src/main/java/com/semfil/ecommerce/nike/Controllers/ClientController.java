@@ -7,6 +7,7 @@ import com.semfil.ecommerce.nike.Service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,9 +20,12 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/newClient")
     public ResponseEntity<Object> newClient(@RequestBody NewClientDTO newClientDTO) {
-        Client client = new Client(newClientDTO.getFirstName(), newClientDTO.getLastName(), newClientDTO.getEmail(), newClientDTO.getPassword(), LocalDate.now());
+        Client client = new Client(newClientDTO.getFirstName(), newClientDTO.getLastName(), newClientDTO.getEmail(), passwordEncoder.encode(newClientDTO.getPassword()), LocalDate.now());
         clientService.saveClient(client);
         return new ResponseEntity<>("Client saved", HttpStatus.OK);
     }

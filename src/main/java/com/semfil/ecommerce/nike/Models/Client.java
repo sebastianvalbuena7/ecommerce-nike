@@ -16,7 +16,7 @@ public class Client {
     private String firstName, lastName, email, password;
     private LocalDate creationDate;
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
-    private Set<Product> products = new HashSet<>();
+    private Set<ClientProduct> clientProducts = new HashSet<>();
 
     public Client() {
     }
@@ -27,6 +27,14 @@ public class Client {
         this.email = email;
         this.password = password;
         this.creationDate = creationDate;
+    }
+
+    public Set<ClientProduct> getClientProducts() {
+        return clientProducts;
+    }
+
+    public void setClientProducts(Set<ClientProduct> clientProducts) {
+        this.clientProducts = clientProducts;
     }
 
     public Long getId() {
@@ -75,13 +83,5 @@ public class Client {
 
     public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public Set<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<Product> products) {
-        this.products = products;
     }
 }

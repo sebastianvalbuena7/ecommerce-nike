@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 public class ClientDTO {
     private Long id;
     private String firstName, lastName, email;
-    private Set<ProductDTO> products;
+    private Set<ClientProductDTO> clientProductDTO;
 
     public ClientDTO(Client client) {
         this.id = client.getId();
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.email = client.getEmail();
-        this.products = client.getProducts().stream().map(ProductDTO::new).collect(Collectors.toSet());
+        this.clientProductDTO = client.getClientProducts().stream().map(clientProduct -> new ClientProductDTO(clientProduct)).collect(Collectors.toSet());
     }
 
     public Long getId() {
@@ -34,7 +34,7 @@ public class ClientDTO {
         return email;
     }
 
-    public Set<ProductDTO> getProducts() {
-        return products;
+    public Set<ClientProductDTO> getProducts() {
+        return clientProductDTO;
     }
 }

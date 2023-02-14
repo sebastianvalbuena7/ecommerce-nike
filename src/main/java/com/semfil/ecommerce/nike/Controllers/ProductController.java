@@ -2,13 +2,19 @@ package com.semfil.ecommerce.nike.Controllers;
 
 import com.semfil.ecommerce.nike.DTO.NewProductDTO;
 import com.semfil.ecommerce.nike.DTO.ProductDTO;
+import com.semfil.ecommerce.nike.Models.Client;
+import com.semfil.ecommerce.nike.Models.ClientProduct;
 import com.semfil.ecommerce.nike.Models.Product;
+import com.semfil.ecommerce.nike.Service.ClientProductService;
+import com.semfil.ecommerce.nike.Service.ClientService;
 import com.semfil.ecommerce.nike.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -19,11 +25,15 @@ import java.util.stream.Collectors;
 public class ProductController {
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ClientService clientService;
+    @Autowired
+    private ClientProductService clientProductService;
 
     @PostMapping("/newProduct")
     public ResponseEntity<Object> newProduct(@RequestBody NewProductDTO newProductDTO) {
         List<Integer> sizeShoes = Arrays.stream(newProductDTO.getSizeShoes()).collect(Collectors.toList());
-        Product product = new Product(newProductDTO.getPrice(), newProductDTO.getName(), newProductDTO.getDescription(), newProductDTO.getImage(), newProductDTO.getCategoryShoes(), sizeShoes);
+        Product product = new Product(newProductDTO.getPrice(), newProductDTO.getName(), newProductDTO.getDescription(), newProductDTO.getImage(), newProductDTO.getCategoryShoes(), sizeShoes, newProductDTO.getStock());
         productService.saveProduct(product);
         return new ResponseEntity<>("Product Save", HttpStatus.ACCEPTED);
     }
@@ -44,6 +54,22 @@ public class ProductController {
 
     @GetMapping("/getProducts")
     public Set<ProductDTO> getProducts() {
-        return productService.getProducts().stream().map(product -> new ProductDTO(product)).collect(Collectors.toSet());
+        return productService.getProducts().stream().map(ProductDTO::new).collect(Collectors.toSet());
+    }
+
+    @PostMapping("/purchaseProduct")
+    public ResponseEntity<Object> purchaseProduct(Authentication authentication, @RequestParam int quantity, @RequestParam Long id) {
+        Client client = clientService.findByEmail(authentication.getName());
+        Product product = productService.getProduct(id);
+        ClientProduct clientProduct = new ClientProduct(LocalDateTime.now(), quantity, client, product);
+        clientProductService.saveClientProduct(clientProduct);
+        return new ResponseEntity<>("Product saved", HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/productsClient")
+    public Set<ProductDTO> productsClient(Authentication authentication) {
+        Client client = clientService.findByEmail(authentication.getName());
+        Set<Product> productsClient = client.getClientProducts().stream().map(clientProduct -> productService.getProduct(clientProduct.getId())).collect(Collectors.toSet());
+        return productsClient.stream().map(ProductDTO::new).collect(Collectors.toSet());
     }
 }
