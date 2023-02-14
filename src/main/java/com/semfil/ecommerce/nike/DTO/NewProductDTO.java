@@ -8,8 +8,9 @@ public class NewProductDTO {
     private int stock;
     private CategoryShoes categoryShoes;
     private Integer[] sizeShoes;
+    private String collection;
 
-    public NewProductDTO(int price, String name, String description, String image, CategoryShoes categoryShoes, Integer[] sizeShoes, int stock) {
+    public NewProductDTO(int price, String name, String description, String image, CategoryShoes categoryShoes, Integer[] sizeShoes, int stock, String collection) {
         this.price = price;
         this.name = name;
         this.description = description;
@@ -17,6 +18,11 @@ public class NewProductDTO {
         this.categoryShoes = categoryShoes;
         this.sizeShoes = sizeShoes;
         this.stock = stock;
+        this.collection = collection;
+    }
+
+    public String getCollection() {
+        return collection;
     }
 
     public int getStock() {

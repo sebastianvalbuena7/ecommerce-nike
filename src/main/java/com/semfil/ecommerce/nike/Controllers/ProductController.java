@@ -33,7 +33,7 @@ public class ProductController {
     @PostMapping("/newProduct")
     public ResponseEntity<Object> newProduct(@RequestBody NewProductDTO newProductDTO) {
         List<Integer> sizeShoes = Arrays.stream(newProductDTO.getSizeShoes()).collect(Collectors.toList());
-        Product product = new Product(newProductDTO.getPrice(), newProductDTO.getName(), newProductDTO.getDescription(), newProductDTO.getImage(), newProductDTO.getCategoryShoes(), sizeShoes, newProductDTO.getStock());
+        Product product = new Product(newProductDTO.getPrice(), newProductDTO.getName(), newProductDTO.getDescription(), newProductDTO.getImage(), newProductDTO.getCategoryShoes(), sizeShoes, newProductDTO.getStock(), newProductDTO.getCollection());
         productService.saveProduct(product);
         return new ResponseEntity<>("Product Save", HttpStatus.ACCEPTED);
     }
@@ -57,8 +57,8 @@ public class ProductController {
         return productService.getProducts().stream().map(ProductDTO::new).collect(Collectors.toSet());
     }
 
-    @PostMapping("/purchaseProduct")
-    public ResponseEntity<Object> purchaseProduct(Authentication authentication, @RequestParam int quantity, @RequestParam Long id) {
+    @PostMapping("/addProductCart")
+    public ResponseEntity<Object> addProductCart(Authentication authentication, @RequestParam int quantity, @RequestParam Long id) {
         Client client = clientService.findByEmail(authentication.getName());
         Product product = productService.getProduct(id);
         ClientProduct clientProduct = new ClientProduct(LocalDateTime.now(), quantity, client, product);

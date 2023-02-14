@@ -4,6 +4,8 @@ import com.semfil.ecommerce.nike.Models.CategoryShoes;
 import com.semfil.ecommerce.nike.Models.Product;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProductDTO {
     private Long id;
@@ -11,6 +13,9 @@ public class ProductDTO {
     private String name,description, image;
     private CategoryShoes categoryShoes;
     private List<Integer> sizeShoes;
+    private int stock;
+
+    private Set<ClientProductDTO> clientProductDTO;
 
     public ProductDTO(Product product) {
         this.id = product.getId();
@@ -20,6 +25,12 @@ public class ProductDTO {
         this.image = product.getImage();
         this.categoryShoes = product.getCategoryShoes();
         this.sizeShoes = product.getSizeShoes();
+        this.stock = product.getStock();
+        this.clientProductDTO = product.getClientProducts().stream().map(ClientProductDTO::new).collect(Collectors.toSet());
+    }
+
+    public Set<ClientProductDTO> getClientProductDTO() {
+        return clientProductDTO;
     }
 
     public Long getId() {
@@ -48,5 +59,9 @@ public class ProductDTO {
 
     public List<Integer> getSizeShoes() {
         return sizeShoes;
+    }
+
+    public int getStock() {
+        return stock;
     }
 }

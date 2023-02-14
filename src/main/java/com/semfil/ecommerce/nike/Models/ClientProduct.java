@@ -53,7 +53,6 @@ public class ClientProduct {
         this.quantity = quantity;
     }
 
-    @JsonIgnore
     public Client getClient() {
         return client;
     }
@@ -62,7 +61,6 @@ public class ClientProduct {
         this.client = client;
     }
 
-    @JsonIgnore
     public Product getProduct() {
         return product;
     }

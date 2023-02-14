@@ -18,6 +18,7 @@ public class Product {
     private String name,description, image;
     private int stock;
     private CategoryShoes categoryShoes;
+    private String collection;
     @ElementCollection
     private List<Integer> sizeShoes = new ArrayList<>();
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
@@ -26,7 +27,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(int price, String name, String description, String image, CategoryShoes categoryShoes, List<Integer> sizeShoes, int stock) {
+    public Product(int price, String name, String description, String image, CategoryShoes categoryShoes, List<Integer> sizeShoes, int stock, String collection) {
         this.price = price;
         this.name = name;
         this.description = description;
@@ -34,6 +35,15 @@ public class Product {
         this.categoryShoes = categoryShoes;
         this.sizeShoes = sizeShoes;
         this.stock = stock;
+        this.collection = collection;
+    }
+
+    public String getCollection() {
+        return collection;
+    }
+
+    public void setCollection(String collection) {
+        this.collection = collection;
     }
 
     public Set<ClientProduct> getClientProducts() {
