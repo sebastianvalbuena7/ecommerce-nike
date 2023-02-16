@@ -14,11 +14,22 @@ li a:hover {
     transition: 0.3s all linear;
 }
 
+html::-webkit-scrollbar{
+    width: 0.5rem;
+    background: black;
+}
+
+
+html::-webkit-scrollbar-thumb{
+    background: #FF4B1F;
+}
+
+
 .background-body {
     background-image: url(../img/background-body.png);
-    background-repeat: repeat-y;
-    object-fit: contain;
-    object-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
 }
 
 .btn-login {
@@ -54,6 +65,11 @@ li a:hover {
     font-family: 'Kanit', sans-serif;
     font-weight: 500;
     text-transform: uppercase;
+}
+
+.navbar {
+    position: fixed;
+    width: 100%;
 }
 
 .logo-nike-header {
@@ -198,6 +214,7 @@ h5 span {
 
 .img-products {
     backdrop-filter: blur(10px) !important;
+    border-radius: 1rem;
 }
 
 .background-products {
@@ -216,5 +233,127 @@ h5 span {
 .buy-products:hover {
     cursor: pointer;
     background: linear-gradient(90deg, rgba(21,19,46,1) 0%, rgb(184, 22, 25) 0%, rgb(0, 67, 190) 100%);
+    transition: 0.3s all linear;
+}
+
+/* About */
+.title-sections {
+    text-align: center;
+    font-weight: bold;
+    font-size: 8rem;
+    -webkit-text-stroke: 2px #FF4B1F;
+    color: transparent;
+}
+
+.img-about {
+    width: 60vh;
+    border-radius: 2rem;
+}
+
+@media (max-width: 950px) {
+    .about-section {
+        flex-direction: column;
+        flex-wrap: wrap !important;
+        align-items: center;
+        justify-content: center !important;
+    }
+    .about-section div {
+        gap: 1rem !important;
+        text-align: center;
+        width: 100%;
+        padding-left: 1rem !important;
+        padding-right: 1rem;
+    }
+    .about-section div img {
+        width: 15rem;
+        margin-top: 1rem;
+    }
+    .about-section h5 {
+        margin-top: 1rem;
+    }
+    .title-sections {
+        font-size: 4.5rem;
+    }
+    .pr {
+        padding-right: 0 !important;
+    }
+}
+
+/* Comments */
+.section-comments {
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur( 7.5px );
+    width: 45rem;
+    justify-content: center;
+    margin-right: 2rem;
+    margin-left: 2rem;
+}
+
+@media (max-width: 900px) {
+    .section-comments {
+        width: 25rem;
+    }
+}
+
+.img-people img{
+    width: 4rem;
+    border-radius: 0.5rem;
+    border: #FF4B1F solid 3px;
+}
+
+.orange-name {
+    color: #FF4B1F;
+}
+
+.inputEmail {
+    background-color: #111111ef;
+    border: none;
+    height: 3rem;
+    border-radius: 1rem;
+    margin-right: 2rem;
+}
+
+::placeholder {
+    color: white;
+    font-size: 1.5rem;
+    padding: 0.2rem;
+}
+
+*:read-write {
+    color: white;
+}
+
+.btn-submit {
+    background: rgb(21,19,46);
+    background: linear-gradient(90deg, rgba(21,19,46,1) 0%, rgba(190,38,41,1) 0%, rgba(0,91,255,1) 100%);
+    color: white;
+    font-family: 'Kanit', sans-serif;
+    text-decoration: none;
+    border: none;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    border-radius: 0.3rem;
+    padding: 0.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(90deg, rgba(21,19,46,1) 0%, rgb(184, 22, 25) 0%, rgb(0, 67, 190) 100%);
+    transition: 0.3s all linear;
+}
+
+/* Footer */
+.text-copyright {
+    background-color: #111;
+    height: 3rem;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+i:hover {
+    color: #afafaf !important;
     transition: 0.3s all linear;
 }

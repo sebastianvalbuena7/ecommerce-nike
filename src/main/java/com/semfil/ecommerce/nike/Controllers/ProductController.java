@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,11 @@ public class ProductController {
     private ClientProductService clientProductService;
 
     @PostMapping("/newProduct")
-    public ResponseEntity<Object> newProduct(@RequestBody NewProductDTO newProductDTO) {
+    public ResponseEntity<Object> newProduct(Authentication authentication ,@RequestBody NewProductDTO newProductDTO) {
+        Client client = clientService.findByEmail(authentication.getName());
+        if(!Objects.equals(client.getEmail(), "admin@correo.com")) {
+            return new ResponseEntity<>("You are not admin", HttpStatus.FORBIDDEN);
+        }
         List<Integer> sizeShoes = Arrays.stream(newProductDTO.getSizeShoes()).collect(Collectors.toList());
         Product product = new Product(newProductDTO.getPrice(), newProductDTO.getName(), newProductDTO.getDescription(), newProductDTO.getImage(), newProductDTO.getCategoryShoes(), sizeShoes, newProductDTO.getStock(), newProductDTO.getCollection());
         productService.saveProduct(product);
