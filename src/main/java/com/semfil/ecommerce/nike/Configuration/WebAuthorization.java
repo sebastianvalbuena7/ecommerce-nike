@@ -2,6 +2,7 @@ package com.semfil.ecommerce.nike.Configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,6 +19,10 @@ public class WebAuthorization {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/api/sendEmail", "/api/newClient").permitAll()
+                .antMatchers("/products.html").hasAuthority("CLIENT")
+                .antMatchers(HttpMethod.GET, "/api/getClients").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET,  "/api/getProducts").hasAnyAuthority("CLIENT", "ADMIN")
                 .antMatchers("/**/**").permitAll();
 
         httpSecurity.formLogin()

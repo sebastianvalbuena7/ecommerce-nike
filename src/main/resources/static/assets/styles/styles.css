@@ -205,11 +205,15 @@ h5 span {
 .card-shoes {
     width: 18rem;
     height: 17rem;
-    /* background-color: #862400; */
+    min-height: 17rem;
+    min-width: 18rem;
+    max-width: 18rem;
+    max-height: 17rem;
 }
 
 .card-shoes img {
     width: 13rem;
+    height: 9rem;
 }
 
 .img-products {
