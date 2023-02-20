@@ -8,4 +8,5 @@ public interface ProductService {
     void saveProduct(Product product);
     Set<Product> getProducts();
     Product getProduct(Long id);
+    void deleteProduct(Long id);
 }

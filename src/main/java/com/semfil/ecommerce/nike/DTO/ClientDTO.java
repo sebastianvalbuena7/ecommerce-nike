@@ -15,7 +15,7 @@ public class ClientDTO {
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.email = client.getEmail();
-        this.clientProductDTO = client.getClientProducts().stream().map(clientProduct -> new ClientProductDTO(clientProduct)).collect(Collectors.toSet());
+        this.clientProductDTO = client.getClientProducts().stream().map(ClientProductDTO::new).collect(Collectors.toSet());
     }
 
     public Long getId() {

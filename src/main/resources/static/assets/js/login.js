@@ -48,7 +48,11 @@ const app = createApp({
         },
         login() {
             axios.post('/api/login', `email=${this.email}&password=${this.password}`)
-                .then(() => location.href = '../../products.html')
+                .then(() => {
+                    axios.get('/api/getClients')
+                        .then(() => location.href = '../../admin.html')
+                        .catch(() => location.href = '../../products.html')
+                })
                 .catch(() => {
                     if ((this.password === undefined || this.password == '') && (this.email == undefined || this.email == '')) {
                         Swal.fire({

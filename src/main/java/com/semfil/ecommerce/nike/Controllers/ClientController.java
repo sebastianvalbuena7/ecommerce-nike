@@ -85,6 +85,7 @@ public class ClientController {
         return clientService.getClients().stream().map(ClientDTO::new).collect(Collectors.toList());
     }
 
+
     @GetMapping("/getClients/{id}")
     public ClientDTO getClient(@PathVariable Long id) {
         return new ClientDTO(clientService.getClient(id));
