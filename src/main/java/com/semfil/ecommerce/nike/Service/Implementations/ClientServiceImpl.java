@@ -33,4 +33,9 @@ public class ClientServiceImpl implements ClientService {
     public Client findByEmail(String email) {
         return clientRepository.findByEmail(email);
     }
+
+    @Override
+    public void deleteClient(Long id) {
+        clientRepository.deleteById(id);
+    }
 }

@@ -9,4 +9,5 @@ public interface ClientService {
     List<Client> getClients();
     Client getClient(Long id);
     Client findByEmail(String email);
+    void deleteClient(Long id);
 }

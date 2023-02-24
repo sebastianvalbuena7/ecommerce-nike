@@ -77,6 +77,14 @@ public class ClientController {
 
         Client clientCurrent = new Client(newClientDTO.getFirstName(), newClientDTO.getLastName(), newClientDTO.getEmail(), passwordEncoder.encode(newClientDTO.getPassword()), LocalDate.now());
         clientService.saveClient(clientCurrent);
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(newClientDTO.getEmail());
+        email.setFrom("sebastianproyectosit@gmail.com");
+        email.setSubject("You have successfully registered👾");
+        email.setText("You have successfully registered on our website and now you can make as many purchases as you wish and receive weekly promotions. \n" +
+                "\n" +
+                "With love from the Nike team🤍");
+        javaMailSender.send(email);
         return new ResponseEntity<>("Client saved", HttpStatus.OK);
     }
 
@@ -85,9 +93,13 @@ public class ClientController {
         return clientService.getClients().stream().map(ClientDTO::new).collect(Collectors.toList());
     }
 
-
     @GetMapping("/getClients/{id}")
     public ClientDTO getClient(@PathVariable Long id) {
         return new ClientDTO(clientService.getClient(id));
+    }
+
+    @DeleteMapping("/deleteClient/{id}")
+    public void deleteClient(@PathVariable Long id) {
+        clientService.deleteClient(id);
     }
 }

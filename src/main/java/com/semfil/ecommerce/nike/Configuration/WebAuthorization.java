@@ -22,6 +22,7 @@ public class WebAuthorization {
                 .antMatchers(HttpMethod.POST, "/api/sendEmail", "/api/newClient").permitAll()
                 .antMatchers("/products.html").hasAuthority("CLIENT")
                 .antMatchers(HttpMethod.GET, "/api/getClients").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/deleteProduct/{id}", "/deleteClient/{id}").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.GET,  "/api/getProducts").permitAll()
                 .antMatchers("/**/**").permitAll();
 
