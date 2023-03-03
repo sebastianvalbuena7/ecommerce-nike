@@ -4,7 +4,9 @@ import com.semfil.ecommerce.nike.DTO.NewProductDTO;
 import com.semfil.ecommerce.nike.DTO.ProductDTO;
 import com.semfil.ecommerce.nike.Models.Client;
 import com.semfil.ecommerce.nike.Models.ClientProduct;
+import com.semfil.ecommerce.nike.Models.PaymentClient;
 import com.semfil.ecommerce.nike.Models.Product;
+import com.semfil.ecommerce.nike.Repositories.PaymentClientRepository;
 import com.semfil.ecommerce.nike.Service.ClientProductService;
 import com.semfil.ecommerce.nike.Service.ClientService;
 import com.semfil.ecommerce.nike.Service.ProductService;
@@ -30,6 +32,8 @@ public class ProductController {
     private ClientService clientService;
     @Autowired
     private ClientProductService clientProductService;
+    @Autowired
+    private PaymentClientRepository paymentClientRepository;
 
     @PostMapping("/newProduct")
     public ResponseEntity<Object> newProduct(Authentication authentication ,@RequestBody NewProductDTO newProductDTO) {
@@ -82,5 +86,15 @@ public class ProductController {
         Client client = clientService.findByEmail(authentication.getName());
         Set<Product> productsClient = client.getClientProducts().stream().map(clientProduct -> productService.getProduct(clientProduct.getId())).collect(Collectors.toSet());
         return productsClient.stream().map(ProductDTO::new).collect(Collectors.toSet());
+    }
+
+    @PostMapping("/payProducts")
+    public ResponseEntity<Object> paymentProducts(Authentication authentication, @RequestBody Set<Long> ids) {
+        Client client = clientService.findByEmail(authentication.getName());
+//        Set<Product> products = ids.stream().map(id -> productService.getProduct(id)).collect(Collectors.toSet());
+//        Integer paymentTotal = products.stream().map(product -> product.getPrice()).reduce((product, product2) -> product + product2).orElse(0);
+//        PaymentClient paymentClient = new PaymentClient(LocalDateTime.now(), paymentTotal , client, products);
+//        paymentClientRepository.save(paymentClient);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

@@ -23,6 +23,8 @@ public class Product {
     private List<Integer> sizeShoes = new ArrayList<>();
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private Set<ClientProduct> clientProducts = new HashSet<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    private PaymentClient paymentClient;
 
     public Product() {
     }
@@ -36,6 +38,14 @@ public class Product {
         this.sizeShoes = sizeShoes;
         this.stock = stock;
         this.collection = collection;
+    }
+
+    public PaymentClient getPaymentClient() {
+        return paymentClient;
+    }
+
+    public void setPaymentClient(PaymentClient paymentClient) {
+        this.paymentClient = paymentClient;
     }
 
     public String getCollection() {

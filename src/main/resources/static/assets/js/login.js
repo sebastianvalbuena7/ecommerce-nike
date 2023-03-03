@@ -9,9 +9,6 @@ const app = createApp({
             lastName: '',
         }
     },
-    created() {
-
-    },
     methods: {
         register() {
             axios.post('/api/newClient', {
@@ -79,9 +76,7 @@ const app = createApp({
         }
     },
 })
-
 app.mount("#app")
-
 
 const signUpButton = document.getElementById('signUp');
 const signInButton = document.getElementById('signIn');
