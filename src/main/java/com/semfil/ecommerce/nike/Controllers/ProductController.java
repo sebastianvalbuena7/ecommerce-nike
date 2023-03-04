@@ -11,6 +11,7 @@ import com.semfil.ecommerce.nike.Service.ClientProductService;
 import com.semfil.ecommerce.nike.Service.ClientService;
 import com.semfil.ecommerce.nike.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -89,12 +90,18 @@ public class ProductController {
     }
 
     @PostMapping("/payProducts")
-    public ResponseEntity<Object> paymentProducts(Authentication authentication, @RequestBody Set<Long> ids) {
+    public ResponseEntity<Object> paymentProducts(Authentication authentication, @RequestParam int quantity, @RequestParam Long[] idProducts) {
         Client client = clientService.findByEmail(authentication.getName());
-//        Set<Product> products = ids.stream().map(id -> productService.getProduct(id)).collect(Collectors.toSet());
-//        Integer paymentTotal = products.stream().map(product -> product.getPrice()).reduce((product, product2) -> product + product2).orElse(0);
-//        PaymentClient paymentClient = new PaymentClient(LocalDateTime.now(), paymentTotal , client, products);
-//        paymentClientRepository.save(paymentClient);
+        List<Long> ids = Arrays.stream(idProducts).collect(Collectors.toList());
+        Set<Product> products = ids.stream().map(id -> productService.getProduct(id)).collect(Collectors.toSet());
+        products.forEach(product -> {
+            if(product.getStock() > 0) {
+                product.setStock(product.getStock() - quantity);
+            }
+        });
+        Integer paymentTotal = products.stream().map(product -> product.getPrice()).reduce((product, product2) -> product + product2).orElse(null);
+        PaymentClient paymentClient = new PaymentClient(LocalDateTime.now(), paymentTotal , client, products);
+        paymentClientRepository.save(paymentClient);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }
