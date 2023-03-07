@@ -9,4 +9,5 @@ public interface ProductService {
     Set<Product> getProducts();
     Product getProduct(Long id);
     void deleteProduct(Long id);
+    Product findByName(String name);
 }

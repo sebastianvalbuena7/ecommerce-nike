@@ -1,27 +1,22 @@
 package com.semfil.ecommerce.nike.Controllers;
 
 import com.semfil.ecommerce.nike.DTO.NewProductDTO;
+import com.semfil.ecommerce.nike.DTO.PaymentProductsDTO;
 import com.semfil.ecommerce.nike.DTO.ProductDTO;
-import com.semfil.ecommerce.nike.Models.Client;
-import com.semfil.ecommerce.nike.Models.ClientProduct;
-import com.semfil.ecommerce.nike.Models.PaymentClient;
-import com.semfil.ecommerce.nike.Models.Product;
+import com.semfil.ecommerce.nike.Models.*;
 import com.semfil.ecommerce.nike.Repositories.PaymentClientRepository;
 import com.semfil.ecommerce.nike.Service.ClientProductService;
 import com.semfil.ecommerce.nike.Service.ClientService;
 import com.semfil.ecommerce.nike.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -49,7 +44,11 @@ public class ProductController {
     }
 
     @PutMapping("/editProduct/{id}")
-    public ResponseEntity<Object> editProduct(@RequestBody NewProductDTO productDTO, @PathVariable Long id) {
+    public ResponseEntity<Object> editProduct(Authentication authentication, @RequestBody NewProductDTO productDTO, @PathVariable Long id) {
+        Client client = clientService.findByEmail(authentication.getName());
+        if(client.getEmail() != "admin@correo.com") {
+            return new ResponseEntity<>("You are not admin", HttpStatus.FORBIDDEN);
+        }
         List<Integer> sizeShoes = Arrays.stream(productDTO.getSizeShoes()).collect(Collectors.toList());
         Product product = productService.getProduct(id);
         product.setPrice(productDTO.getPrice());
@@ -63,7 +62,11 @@ public class ProductController {
     }
 
     @DeleteMapping("/deleteProduct/{id}")
-    public ResponseEntity<Object> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteProduct(Authentication authentication, @PathVariable Long id) {
+        Client client = clientService.findByEmail(authentication.getName());
+        if(client.getEmail() != "admin@correo.com") {
+            return new ResponseEntity<>("You are not admin", HttpStatus.FORBIDDEN);
+        }
         productService.deleteProduct(id);
         return new ResponseEntity<>("Product Deleted!", HttpStatus.ACCEPTED);
     }
@@ -90,18 +93,32 @@ public class ProductController {
     }
 
     @PostMapping("/payProducts")
-    public ResponseEntity<Object> paymentProducts(Authentication authentication, @RequestParam int quantity, @RequestParam Long[] idProducts) {
+    public ResponseEntity<Object> paymentProducts(Authentication authentication, @RequestBody Set<PaymentProductsDTO> paymentProductsDTO) {
         Client client = clientService.findByEmail(authentication.getName());
-        List<Long> ids = Arrays.stream(idProducts).collect(Collectors.toList());
-        Set<Product> products = ids.stream().map(id -> productService.getProduct(id)).collect(Collectors.toSet());
-        products.forEach(product -> {
-            if(product.getStock() > 0) {
-                product.setStock(product.getStock() - quantity);
+        if(client == null) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        Integer paymentTotal = paymentProductsDTO.stream().map(product -> product.getProduct().getPrice() * product.getQuantity()).reduce((product, product2) -> product + product2).orElse(null);
+        Set<Product> products = new HashSet<>();
+
+        paymentProductsDTO.forEach(paymentProductsDTO1 -> {
+            Product product = productService.findByName(paymentProductsDTO1.getProduct().getName());
+            if(product.getStock() >= paymentProductsDTO1.getQuantity()) {
+                product.setStock(product.getStock() - paymentProductsDTO1.getQuantity());
+                products.add(product);
             }
         });
-        Integer paymentTotal = products.stream().map(product -> product.getPrice()).reduce((product, product2) -> product + product2).orElse(null);
         PaymentClient paymentClient = new PaymentClient(LocalDateTime.now(), paymentTotal , client, products);
         paymentClientRepository.save(paymentClient);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/pdfProducts")
+    public ResponseEntity<Object> pdfPayProducts(HttpServletResponse httpServletResponse, Authentication authentication) throws Exception {
+        Client client = clientService.findByEmail(authentication.getName());
+        Set<Product> products = new HashSet<>();
+        client.getPaymentClients().forEach(paymentClient -> products.addAll(paymentClient.getProducts()));
+        CreatePDF.generatePDF(client.getPaymentClients(), client, products ,httpServletResponse);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
