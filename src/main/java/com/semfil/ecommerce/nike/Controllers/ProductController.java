@@ -116,9 +116,9 @@ public class ProductController {
     @PostMapping("/pdfProducts")
     public ResponseEntity<Object> pdfPayProducts(HttpServletResponse httpServletResponse, Authentication authentication) throws Exception {
         Client client = clientService.findByEmail(authentication.getName());
-        Set<Product> products = new HashSet<>();
-        client.getPaymentClients().forEach(paymentClient -> products.addAll(paymentClient.getProducts()));
-        CreatePDF.generatePDF(client.getPaymentClients(), client, products ,httpServletResponse);
+        Set<PaymentClient> products = client.getPaymentClients();
+        System.out.println(products);
+        CreatePDF.generatePDF(client.getPaymentClients(), client, httpServletResponse);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

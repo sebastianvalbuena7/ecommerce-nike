@@ -7,11 +7,13 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
 public class CreatePDF {
-    public static void generatePDF(Set<PaymentClient> paymentClients, Client client ,Set<Product> products ,HttpServletResponse httpServletResponse) throws Exception {
+    public static void generatePDF(Set<PaymentClient> paymentClients, Client client, HttpServletResponse httpServletResponse) throws Exception {
         httpServletResponse.setContentType("application/pdf");
         httpServletResponse.setHeader("Content-Disposition", "attachment; filename=payment.pdf");
 
@@ -41,13 +43,6 @@ public class CreatePDF {
             tablePayments.addCell(String.valueOf(paymentClient.getClient().getEmail()));
         });
 
-        PdfPTable tableProducts = new PdfPTable(2);
-        Stream.of("Name","Price").forEach(t -> tableProducts.addCell(t));
-        products.forEach(product -> {
-            tableProducts.addCell(String.valueOf(product.getName()));
-            tableProducts.addCell(String.valueOf(product.getPrice()));
-        });
-
         Document document = new Document();
         document.setPageSize(PageSize.LETTER.rotate());
         PdfWriter.getInstance(document, httpServletResponse.getOutputStream());
@@ -58,7 +53,6 @@ public class CreatePDF {
         document.add(title);
         document.add(subTitle);
         document.add(tablePayments);
-        document.add(tableProducts);
         //cerrar el documento
         document.close();
     }
