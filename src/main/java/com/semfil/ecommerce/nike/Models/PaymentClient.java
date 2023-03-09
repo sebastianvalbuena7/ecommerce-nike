@@ -17,7 +17,7 @@ public class PaymentClient {
     private Integer totalAmount;
     @ManyToOne(fetch = FetchType.EAGER)
     private Client client;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "paymentClient")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "paymentClient")
     private Set<Product> products = new HashSet<>();
 
     public PaymentClient() {

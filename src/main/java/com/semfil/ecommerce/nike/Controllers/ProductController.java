@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -92,17 +93,23 @@ public class ProductController {
         return productsClient.stream().map(ProductDTO::new).collect(Collectors.toSet());
     }
 
+    @Transactional
     @PostMapping("/payProducts")
     public ResponseEntity<Object> paymentProducts(Authentication authentication, @RequestBody Set<PaymentProductsDTO> paymentProductsDTO) {
         Client client = clientService.findByEmail(authentication.getName());
         if(client == null) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        Integer paymentTotal = paymentProductsDTO.stream().map(product -> product.getProduct().getPrice() * product.getQuantity()).reduce((product, product2) -> product + product2).orElse(null);
-        Set<Product> products = new HashSet<>();
+        Set<Product> products = paymentProductsDTO.stream().map(paymentProductsDTO1 -> productService.getProduct(paymentProductsDTO1.getId())).collect(Collectors.toSet());
+        Integer paymentTotal = paymentProductsDTO.stream()
+                .map(product -> {
+                    Product product1 = productService.getProduct(product.getId());
+                    return product1.getPrice() * product.getQuantity();
+                })
+                .reduce(Integer::sum).orElse(0);
 
         paymentProductsDTO.forEach(paymentProductsDTO1 -> {
-            Product product = productService.findByName(paymentProductsDTO1.getProduct().getName());
+            Product product = productService.getProduct(paymentProductsDTO1.getId());
             if(product.getStock() >= paymentProductsDTO1.getQuantity()) {
                 product.setStock(product.getStock() - paymentProductsDTO1.getQuantity());
                 products.add(product);
@@ -116,8 +123,6 @@ public class ProductController {
     @PostMapping("/pdfProducts")
     public ResponseEntity<Object> pdfPayProducts(HttpServletResponse httpServletResponse, Authentication authentication) throws Exception {
         Client client = clientService.findByEmail(authentication.getName());
-        Set<PaymentClient> products = client.getPaymentClients();
-        System.out.println(products);
         CreatePDF.generatePDF(client.getPaymentClients(), client, httpServletResponse);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

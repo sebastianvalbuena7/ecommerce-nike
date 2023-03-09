@@ -1,14 +1,12 @@
 package com.semfil.ecommerce.nike.DTO;
 
-import com.semfil.ecommerce.nike.Models.Product;
-
 public class PaymentProductsDTO {
     private int quantity;
-    private Product product;
+    private Long id;
 
-    public PaymentProductsDTO(int quantity, Product product) {
+    public PaymentProductsDTO(int quantity, Long id) {
         this.quantity = quantity;
-        this.product = product;
+        this.id = id;
     }
 
     public int getQuantity() {
@@ -19,11 +17,11 @@ public class PaymentProductsDTO {
         this.quantity = quantity;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getId() {
+        return id;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setId(Long id) {
+        this.id = id;
     }
 }
